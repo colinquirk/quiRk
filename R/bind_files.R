@@ -1,4 +1,4 @@
-bind_files = function(fp, ext="csv", output='', find_id=F, pattern=NULL, .id=NULL) {
+bind_files = function(fp, ext="csv", output=NULL, find_id=F, pattern=NULL, .id=NULL) {
   require(readr)
   require(dplyr)
   require(stringr)
@@ -15,11 +15,17 @@ bind_files = function(fp, ext="csv", output='', find_id=F, pattern=NULL, .id=NUL
 
   files = list.files(path = fp, pattern = paste0('*.', ext), full.names=T)
 
-  if (find_id) {
-    id = stringr::str_match(files, pattern)[,2]
+  if (is.null(output)) {
+    if (find_id) {
+      id = stringr::str_match(files, pattern)[,2]
+      dat = setNames(lapply(files, FUN=read_csv), id) %>%
+        bind_rows(.id = .id)
+    } else {
+      dat = lapply(files, FUN=read_csv) %>% bind_rows()
+    }
+    return(dat)
+  } else {
+    get_file(files[[1]])
+    return(NULL)
   }
-
-  get_file(files[[1]])
-
-  NULL
 }
