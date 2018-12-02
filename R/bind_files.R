@@ -5,6 +5,7 @@ bind_files = function(fp, ext="csv", output=NULL, find_id=F, pattern=NULL, .id=N
 
   get_file = function(f, append=T) {
     if (find_id) {
+      id = stringr::str_match(f, pattern)[,2]
       temp = read_csv(f) %>%
         mutate(!!.id := id)
     } else {
@@ -25,7 +26,8 @@ bind_files = function(fp, ext="csv", output=NULL, find_id=F, pattern=NULL, .id=N
     }
     return(dat)
   } else {
-    get_file(files[[1]])
+    get_file(files[[1]], append=F)
+    lapply(files[-1], get_file)
     return(NULL)
   }
 }
