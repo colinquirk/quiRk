@@ -1,33 +1,16 @@
-bind_files = function(fp, ext="csv", output=NULL, find_id=F, pattern=NULL, .id=NULL) {
+bind_files = function(fp, ext="csv", find_id=F, pattern=NULL, .id=NULL) {
+  require(quiRk)
   require(readr)
-  require(dplyr)
-  require(stringr)
-
-  get_file = function(f, append=T) {
-    if (find_id) {
-      id = stringr::str_match(f, pattern)[,2]
-      temp = read_csv(f) %>%
-        mutate(!!.id := id)
-    } else {
-      temp = read_csv(f)
-    }
-    write_csv(temp, output, append=append)
-  }
 
   files = list.files(path = fp, pattern = paste0('*.', ext), full.names=T)
 
-  if (is.null(output)) {
-    if (find_id) {
-      id = stringr::str_match(files, pattern)[,2]
-      dat = setNames(lapply(files, FUN=read_csv), id) %>%
-        bind_rows(.id = .id)
-    } else {
-      dat = lapply(files, FUN=read_csv) %>% bind_rows()
-    }
-    return(dat)
-  } else {
-    get_file(files[[1]], append=F)
-    lapply(files[-1], get_file)
-    return(NULL)
+  dfs = lapply(files, read_csv)
+
+  if (find_id) {
+    vals = get_filename_info(files, pattern)
+    dfs = add_filename_info(dfs, .id, vals)
   }
+
+  dfs %>%
+    bind_rows()
 }
