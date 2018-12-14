@@ -7,8 +7,8 @@ bind_files = function(fp, ext="csv", find_id=F, pattern=NULL, .id=NULL) {
   dfs = lapply(files, read_csv)
 
   if (find_id) {
-    vals = get_filename_info(files, pattern)
-    dfs = add_filename_info(dfs, .id, vals)
+    vals = quiRk::get_filename_info(files, pattern)
+    dfs = quiRk::add_filename_info(dfs, .id, vals)
   }
 
   dfs %>%
