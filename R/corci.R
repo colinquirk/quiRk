@@ -3,6 +3,7 @@
 
 corci = function(x, a, b, ...){
   require(magrittr)
+  require(dplyr)
 
   res = cor.test(x[[a]], x[[b]], ...)
 
