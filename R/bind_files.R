@@ -1,5 +1,6 @@
 bind_files = function(fp, ext="csv", find_id=F, pattern=NULL, .id=NULL, func=NULL, ...) {
   require(quiRk)
+  require(magrittr)
   require(readr)
 
   if (is.null(func)) {
